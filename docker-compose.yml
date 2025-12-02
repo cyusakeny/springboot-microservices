@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  gateway-service:
+    image: ghcr.io/cyusakeny/gateway-service:latest
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      USERSERVICE_URL: "http://user-service:8093"
+      TAXSERVICE_URL: "http://tax-service:8094"
+    networks:
+      - app-network
+
+  user-service:
+    image: ghcr.io/cyusakeny/user-service:latest
+    container_name: user-service
+    ports:
+      - "8093:8093"
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:jdbc:postgresql://142.93.28.84:5432/cok
+      - SPRING_DATASOURCE_USERNAME=cokuser
+      - SPRING_DATASOURCE_PASSWORD=Cok@123
+    networks:
+      - app-network
+
+  tax-service:
+    image:  ghcr.io/cyusakeny/tax-period-service:latest
+    container_name: tax-service
+    ports:
+      - "8094:8094"
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:jdbc:postgresql://142.93.28.84:5432/cok
+      - SPRING_DATASOURCE_USERNAME=cokuser
+      - SPRING_DATASOURCE_PASSWORD=Cok@123
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
